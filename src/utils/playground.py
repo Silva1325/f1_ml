@@ -8,7 +8,7 @@ from retry_requests import retry
 
 fastf1.Cache.enable_cache("f1_cache")
 
-race = fastf1.get_session(2021, "Belgium", "R")
+race = fastf1.get_session(2025, "British Grand Prix", "R")
 race.load()
 
 # Setup the Open-Meteo API client with cache and retry on error
@@ -21,6 +21,11 @@ session_info = race.session_info
 start_date = session_info['StartDate'].strftime("%Y-%m-%d")
 end_date = session_info['EndDate']
 
-print(start_date)
-print(end_date)
+total_laps = race.total_laps
+
+with pd.option_context('display.max_rows', None, 'display.max_columns', None):  # more options can be specified also
+    print(total_laps)
+
+#print(start_date)
+#print(end_date)
 

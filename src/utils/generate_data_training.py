@@ -328,6 +328,7 @@ def _extract_race_features(year, gp_name, lat, lon):
     race_data["Date"] = date.strftime("%Y-%m-%d")
     race_data["Year"] = year
     race_data["GP"] = gp_name
+    race_data["Laps"] = race.total_laps
     
     return race_data
 
@@ -373,18 +374,8 @@ def add_driver_track_condition_performance(training_data):
 
     return training_data
 
-def _get_drivers_elo(historical_races_data: pd.DataFrame) -> pd.DataFrame:
-    """
-    Computes time-evolving Driver Elo ratings based on qualifying performance.
-    Better qualifying position = more Elo gained.
-    
-    Parameters:
-        historical_races_data: concatenated DataFrame from get_historical_races_data()
-                               Must contain: ['Year', 'GP', 'Driver', 'QualifyingTime (s)']
-    
-    Returns:
-        DataFrame with columns: Year, GP, Driver, DriverEloBefore, DriverEloAfter
-    """
+def _get_drivers_elo(historical_races_data):
+
     df = historical_races_data.copy()
     df = df[['Year', 'GP', 'Driver', 'QualifyingTime (s)']].dropna(subset=['QualifyingTime (s)'])
     
@@ -453,11 +444,8 @@ def _get_drivers_elo(historical_races_data: pd.DataFrame) -> pd.DataFrame:
     return elo_df[['Year', 'GP', 'Driver', 'DriverEloBefore', 'DriverEloAfter']]
 
 
-def _get_constructors_elo(historical_races_data: pd.DataFrame) -> pd.DataFrame:
-    """
-    Time-evolving Constructor Elo based on the BEST qualifying driver per team.
-    Fixed version — no undefined variables!
-    """
+def _get_constructors_elo(historical_races_data):
+
     df = historical_races_data.copy()
     df = df[['Year', 'GP', 'Driver', 'QualifyingTime (s)']].dropna(subset=['QualifyingTime (s)'])
 
